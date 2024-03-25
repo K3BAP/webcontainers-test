@@ -8,20 +8,25 @@ let webcontainerInstance;
 
 async function bootContainer() {
   // Boot WebContainer
+  console.log('booting webcontainer...')
   webcontainerInstance = await WebContainer.boot();
 
   // Mount filesystem snapshot
+  console.log('mounting snapshot...')
   const snapshotResponse = await fetch(serverFilesystemSnapshot);
   const snapshot = await snapshotResponse.arrayBuffer();
   await webcontainerInstance.mount(snapshot);
 
   // Run Application
+  console.log('starting process...')
   const serverProcess = await webcontainerInstance.spawn('npm', ['run', 'serve']);
   serverProcess.output.pipeTo(new WritableStream({
     write(data) {
       console.log(data);
     }
   }));
+
+  serverProcess.
 
   // Extract URL and Port of application
   webcontainerInstance.on('server-ready', (port, url) => {
